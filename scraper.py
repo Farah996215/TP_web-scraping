@@ -7,18 +7,21 @@ def main():
 
     soup = BeautifulSoup(response.content, "html.parser")
 
-    # find all elements with class="ind" and indent level = 0
     elements = soup.find_all("td", class_="ind", style="margin-left:0px")
 
-    # for each of this elements, find the next element
-    comments = [e.find_next(class_="comment") for e in elements]
+    comments = [e.find_next(class_="comment") for e in elements if e.find_next(class_="comment")]
 
-    print(f"Comments: {len(comments)}")
+    keywords = {"python": 0, "javascript": 0, "typescript": 0, "go": 0, "c#": 0, "java": 0, "rust": 0 }
 
-    # show each comment (job post)
     for comment in comments:
-        print(comment.text)
-        print("-" * 80)
+        comment_text = comment.get_text().lower()
+        words = comment_text.split()
+
+        for word in words:
+            if word in keywords:
+                keywords[word] += 1
+
+    print(keywords)
 
 if __name__ == "__main__":
     main()
